@@ -13,7 +13,7 @@ class Simulation(object):
     population that are vaccinated, the size of the population, and the amount of initially
     infected people in a population are all variables that can be set when the program is run.
     '''
-    def __init__(self, pop_size, vacc_percentage, virus, initial_infected=1):
+    def __init__(self, pop_size, vacc_percentage, virus, initial_infected):
         ''' Logger object logger records all events during the simulation.
         Population represents all Persons in the population.
         The next_person_id is the next available id for all created Persons,
@@ -34,8 +34,6 @@ class Simulation(object):
         # At the end of each time step, call self._infect_newly_infected()
         # and then reset .newly_infected back to an empty list.
 
-        # Populated self.population using _create_population() method
-        self.population = self._create_population() # List of Person objects
         self.pop_size = pop_size # Int
         self.next_person_id = 0 # Int
         self.virus = virus # Virus object
@@ -47,6 +45,9 @@ class Simulation(object):
         self.file_name = "{}_simulation_pop_{}_vp_{}_infected_{}.txt".format(
             self.virus.name, self.pop_size, self.vacc_percentage, self.initial_infected)
         self.newly_infected = []
+
+        # Populated self.population using _create_population() method
+        self.population = self._create_population() # List of Person objects
 
         # Created a Logger object and bind it to self.logger
         self.logger = Logger(self.file_name) 
@@ -76,7 +77,7 @@ class Simulation(object):
             new_person = Person(i, False, self.virus)
             population.append(new_person)
 
-        vaccinated_population_count = self.vacc_percentage * self.pop_size
+        vaccinated_population_count = int(self.vacc_percentage * self.pop_size)
 
         for i in range(vaccinated_population_count):
             new_person = Person(i + self.initial_infected, True)
@@ -86,7 +87,6 @@ class Simulation(object):
         for i in range(healthy_unvaccinated_population_count):
             new_person = Person(self.pop_size - i, False)
             population.append(new_person)
-
         return population
 
     def _simulation_should_continue(self):
@@ -123,6 +123,7 @@ class Simulation(object):
             # round of this simulation.
             time_step_counter += 1
             print(time_step_counter)
+            self.time_step()
 
         print('The simulation has ended after {time_step_counter} turns.'.format(time_step_counter))
 
@@ -141,7 +142,7 @@ class Simulation(object):
         # TODO: Finish this method.
         interaction = 0
         for person in self.population:
-            if person.virus == self.virus:
+            if person.infection == self.virus:
                 for i in range(100):
                     other_person = random.choice(self.population)
                     if other_person.is_alive:
@@ -175,12 +176,12 @@ class Simulation(object):
             #     attribute can be changed to True at the end of the time step.
         # TODO: Call slogger method during this method.
         did_infect = False
-        if (not random_person.is_vaccinated) and (not random_person.virus == self.virus):
+        if (not random_person.is_vaccinated) and (not random_person.infection == self.virus):
             if self.virus.repro_rate > random.random():
                 self.newly_infected.append(random_person)
                 did_infect = True
         
-        self.logger.log_interaction(person, random_person, random_person.virus is not None,
+        self.logger.log_interaction(person, random_person, random_person.infection is not None,
                 random_person.is_vaccinated, did_infect)
 
     def _infect_newly_infected(self):
@@ -207,6 +208,7 @@ if __name__ == "__main__":
         initial_infected = 1
 
     virus = Virus(virus_name, repro_rate, mortality_rate)
-    sim = Simulation(pop_size, vacc_percentage, initial_infected, virus)
+    sim = Simulation(pop_size, vacc_percentage, Virus(virus_name, repro_rate, 
+            mortality_rate), initial_infected)
 
     sim.run()
