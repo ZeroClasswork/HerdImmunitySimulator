@@ -28,7 +28,7 @@ class Logger(object):
         f.write(f"Hello, world, it's {virus_name}! \n")
         f.write(f"I have a mortality rate of {mortality_rate} and a reproduction rate of {basic_repro_num}. \n")
         f.write(f"Today, I'll be infecting a population of {pop_size} with a {vacc_percentage}% vaccination rate. \n")
-        f.write(f"=============================================================================================== \n\n")
+        f.write(f"=============================================================================================== \n\n\n")
         f.close()
 
     def log_interaction(self, person, random_person, random_person_sick=False,
@@ -59,7 +59,7 @@ class Logger(object):
 
     def log_infection_survival(self, person, did_die_from_infection):
         ''' The Simulation object uses this method to log the results of every
-        call of a Person object's .resolve_infection() method.
+        call of a Person object's .did_survive_infection() method.
 
         The format of the log should be:
             "{person.ID} died from infection\n" or "{person.ID} survived infection.\n"
@@ -67,6 +67,11 @@ class Logger(object):
         # TODO: Finish this method. If the person survives, did_die_from_infection
         # should be False.  Otherwise, did_die_from_infection should be True.
         # Append the results of the infection to the logfile
+        f = open(self.file_name, "a")
+        if did_die_from_infection:
+            f.write(f"{person._id} died from infection. \n")
+        else:
+            f.write(f"{person._id} survived infection. \n")
         pass
 
     def log_time_step(self, time_step_number):
