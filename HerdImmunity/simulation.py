@@ -78,7 +78,10 @@ class Simulation(object):
                 bool: True for simulation should continue, False if it should end.
         '''
         # TODO: Complete this helper method.  Returns a Boolean.
-        pass
+        for person in self.population:
+            if person.is_alive and not person.is_vaccinated:
+                return True
+        return False
 
     def run(self):
         ''' This method should run the simulation until all requirements for ending
@@ -92,13 +95,14 @@ class Simulation(object):
         # HINT: You may want to call the logger's log_time_step() method at the end of each time step.
         # TODO: Set this variable using a helper
         time_step_counter = 0
-        should_continue = None
 
-        while should_continue:
+        while self._simulation_should_continue():
             # TODO: for every iteration of this loop, call self.time_step() to compute another
             # round of this simulation.
-            print('The simulation has ended after {time_step_counter} turns.'.format(time_step_counter))
-            pass
+            time_step_counter = self.time_step()
+            print(time_step_counter)
+
+        print('The simulation has ended after {time_step_counter} turns.'.format(time_step_counter))
 
     def time_step(self):
         ''' This method should contain all the logic for computing one time step
@@ -121,6 +125,7 @@ class Simulation(object):
                     if other_person.is_alive:
                         self.interaction(person, other_person)
                         interaction += 1 
+        return interaction
 
     def interaction(self, person, random_person):
         '''This method should be called any time two living people are selected for an
