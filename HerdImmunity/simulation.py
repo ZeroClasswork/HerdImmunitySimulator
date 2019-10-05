@@ -37,7 +37,7 @@ class Simulation(object):
         # Created a Logger object and bind it to self.logger
         self.logger = Logger(virus + "With" + pop_size + "Pop.txt") 
         # Populated self.population using _create_population() method
-        self.population = self._create_population(initial_infected) # List of Person objects
+        self.population = self._create_population() # List of Person objects
         self.pop_size = pop_size # Int
         self.next_person_id = 0 # Int
         self.virus = virus # Virus object
@@ -50,7 +50,7 @@ class Simulation(object):
             virus_name, pop_size, vacc_percentage, initial_infected)
         self.newly_infected = []
 
-    def _create_population(self, initial_infected):
+    def _create_population(self):
         '''This method will create the initial population.
             Args:
                 initial_infected (int): The number of infected people that the simulation
@@ -113,7 +113,14 @@ class Simulation(object):
                 increment interaction counter by 1.
             '''
         # TODO: Finish this method.
-        pass
+        interaction = 0
+        for person in self.population:
+            if person.virus == self.virus:
+                for i in range(100):
+                    other_person = random.choice(self.population)
+                    if other_person.is_alive:
+                        self.interaction(person, other_person)
+                        interaction += 1 
 
     def interaction(self, person, random_person):
         '''This method should be called any time two living people are selected for an
