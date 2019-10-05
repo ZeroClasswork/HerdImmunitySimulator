@@ -105,7 +105,7 @@ class Simulation(object):
         in the simulation.
 
         This includes:
-            1. 100 total interactions with a randon person for each infected person
+            1. 100 total interactions with a random person for each infected person
                 in the population
             2. If the person is dead, grab another random person from the population.
                 Since we don't interact with dead people, this does not count as an interaction.
@@ -140,7 +140,9 @@ class Simulation(object):
             #     Simulation object's newly_infected array, so that their .infected
             #     attribute can be changed to True at the end of the time step.
         # TODO: Call slogger method during this method.
-        pass
+        if (not random_person.is_vaccinated) and (not random_person.virus == self.virus):
+            if self.virus.repro_rate > random.random():
+                self.newly_infected.append(random_person)
 
     def _infect_newly_infected(self):
         ''' This method should iterate through the list of ._id stored in self.newly_infected
@@ -148,8 +150,9 @@ class Simulation(object):
         # TODO: Call this method at the end of every time step and infect each Person.
         # TODO: Once you have iterated through the entire list of self.newly_infected, remember
         # to reset self.newly_infected back to an empty list.
-        pass
-
+        for person in self.newly_infected:
+            person.virus = self.virus
+        self.newly_infected = []
 
 if __name__ == "__main__":
     params = sys.argv[1:]
