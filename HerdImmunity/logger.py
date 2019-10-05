@@ -24,15 +24,15 @@ class Logger(object):
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
 
-        f = open(file_name, "w")
+        f = open(self.file_name, "w")
         f.write(f"Hello, world, it's {virus_name}! \n")
         f.write(f"I have a mortality rate of {mortality_rate} and a reproduction rate of {basic_repro_num}. \n")
         f.write(f"Today, I'll be infecting a population of {pop_size} with a {vacc_percentage}% vaccination rate. \n")
         f.write(f"=============================================================================================== \n\n")
         f.close()
 
-    def log_interaction(self, person, random_person, random_person_sick=None,
-                        random_person_vacc=None, did_infect=None):
+    def log_interaction(self, person, random_person, random_person_sick=False,
+                        random_person_vacc=False, did_infect=False):
         '''
         The Simulation object should use this method to log every interaction
         a sick person has during each time step.
@@ -46,14 +46,16 @@ class Logger(object):
         # represent all the possible edge cases. Use the values passed along with each person,
         # along with whether they are sick or vaccinated when they interact to determine
         # exactly what happened in the interaction and create a String, and write to your logfile.
+        f = open(self.file_name, "a")
         if did_infect:
-            print(f"{person._id} infects {random_person._id}. \n")
-        else if random_person_sick:
-            print(f"{person._id} didn't infect {random_person._id} because they were already sick. \n")
-        else if random_person_vacc:
-            print(f"{person._id} didn't infect {random_person._id} because they were already immune. \n")
+            f.write(f"{person._id} infects {random_person._id}. \n")
+        elif random_person_sick:
+            f.write(f"{person._id} didn't infect {random_person._id} because they were already sick. \n")
+        elif random_person_vacc:
+            f.write(f"{person._id} didn't infect {random_person._id} because they were already immune. \n")
         else:
-            print(f"{person._id} didn't infect {random_person._id} despite the ability to and their interaction. \n")
+            f.write(f"{person._id} didn't infect {random_person._id} despite the ability to and their interaction. \n")
+        f.close()
 
     def log_infection_survival(self, person, did_die_from_infection):
         ''' The Simulation object uses this method to log the results of every
