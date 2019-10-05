@@ -83,7 +83,7 @@ class Simulation(object):
 
         healthy_unvaccinated_population_count = self.pop_size - self.initial_infected - vaccinated_population_count
         for i in range(healthy_unvaccinated_population_count):
-            new_person = Person(population_count - i, False)
+            new_person = Person(self.pop_size - i, False)
             population.append(new_person)
 
         return population
