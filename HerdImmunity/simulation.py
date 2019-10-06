@@ -99,6 +99,7 @@ class Simulation(object):
         # TODO: Complete this helper method.  Returns a Boolean.
         for person in self.population:
             if person.is_alive and not person.is_vaccinated:
+                print(person._id, " returns true")
                 return True
         return False
 
@@ -124,8 +125,10 @@ class Simulation(object):
             time_step_counter += 1
             print(time_step_counter)
             self.time_step()
+            self._evaluate_infected()
+            self._infect_newly_infected()
 
-        print('The simulation has ended after {time_step_counter} turns.'.format(time_step_counter))
+        print('The simulation has ended after {} turns.'.format(time_step_counter))
 
     def time_step(self):
         ''' This method should contain all the logic for computing one time step
@@ -142,12 +145,13 @@ class Simulation(object):
         # TODO: Finish this method.
         interaction = 0
         for person in self.population:
-            if person.infection == self.virus:
+            if person.infection == self.virus and person.is_alive:
                 for i in range(100):
                     other_person = random.choice(self.population)
-                    if other_person.is_alive:
-                        self.interaction(person, other_person)
-                        interaction += 1 
+                    while not other_person.is_alive:
+                        other_person = random.choice(self.population)
+                    self.interaction(person, other_person)
+                    interaction += 1 
         return interaction
 
     def interaction(self, person, random_person):
@@ -184,14 +188,20 @@ class Simulation(object):
         self.logger.log_interaction(person, random_person, random_person.infection is not None,
                 random_person.is_vaccinated, did_infect)
 
+    def _evaluate_infected(self):
+        ''' This method should iterate through the population and either kill off or immunize the infected. '''
+        for person in self.population:
+            if person.infection is not None:
+                person.did_survive_infection()
+
     def _infect_newly_infected(self):
-        ''' This method should iterate through the list of ._id stored in self.newly_infected
+        ''' This method should iterate through the list of Person objects stored in self.newly_infected
         and update each Person object with the disease. '''
         # TODO: Call this method at the end of every time step and infect each Person.
         # TODO: Once you have iterated through the entire list of self.newly_infected, remember
         # to reset self.newly_infected back to an empty list.
         for person in self.newly_infected:
-            person.virus = self.virus
+            person.infection = self.virus
         self.newly_infected = []
 
 if __name__ == "__main__":
