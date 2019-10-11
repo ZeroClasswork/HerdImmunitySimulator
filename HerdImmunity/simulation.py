@@ -99,7 +99,6 @@ class Simulation(object):
         # TODO: Complete this helper method.  Returns a Boolean.
         for person in self.population:
             if person.is_alive and not person.is_vaccinated:
-                print(person._id, " returns true")
                 return True
         return False
 
@@ -143,16 +142,18 @@ class Simulation(object):
                 increment interaction counter by 1.
             '''
         # TODO: Finish this method.
-        interaction = 0
+        interaction_count = 0
         for person in self.population:
-            if person.infection == self.virus and person.is_alive:
+            if person.infection == self.virus and person.is_alive and not person.is_vaccinated:
                 for i in range(100):
+                    if not self._simulation_should_continue():
+                        return interaction_count
                     other_person = random.choice(self.population)
                     while not other_person.is_alive:
                         other_person = random.choice(self.population)
                     self.interaction(person, other_person)
-                    interaction += 1 
-        return interaction
+                    interaction_count += 1 
+        return interaction_count
 
     def interaction(self, person, random_person):
         '''This method should be called any time two living people are selected for an
@@ -218,7 +219,6 @@ if __name__ == "__main__":
         initial_infected = 1
 
     virus = Virus(virus_name, repro_rate, mortality_rate)
-    sim = Simulation(pop_size, vacc_percentage, Virus(virus_name, repro_rate, 
-            mortality_rate), initial_infected)
+    sim = Simulation(pop_size, vacc_percentage, virus, initial_infected)
 
     sim.run()

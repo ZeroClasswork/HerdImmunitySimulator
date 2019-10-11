@@ -27,7 +27,7 @@ class Logger(object):
         f = open(self.file_name, "w")
         f.write(f"Hello, world, it's {virus_name}! \n")
         f.write(f"I have a mortality rate of {mortality_rate} and a reproduction rate of {basic_repro_num}. \n")
-        f.write(f"Today, I'll be infecting a population of {pop_size} with a {vacc_percentage}% vaccination rate. \n")
+        f.write(f"Today, I'll be infecting a population of {pop_size} with a {vacc_percentage} vaccination rate. \n")
         f.write(f"=============================================================================================== \n\n\n")
         f.close()
 
